@@ -9,8 +9,62 @@
 <body>
     <div class="container">
         <p>Enter your text or URL</p>
-        <input type="text" palceholder="Text or URl">
-        <button> Generate QR code</button> 
+        <input type="text" placeholder="Text or URl" id="qrText">
+        <div id="imgBox">
+            <img src="" id='qrImage' alt="">
+        </div>
+        <div class="foot">
+            <button  class="f1" onclick="generateQR()"> Generate QR code</button> 
+            <button  class="f1" id="downloadImg" > Download Img</button>
+             <!-- //hidden at first -->
+
+
+             <!-- <a  class="f1" id="downloadImg" href="" download="QR_Code.png">Download</a> -->
+            <!--  download image file with name QR_code  -->
+        </div>
+       
     </div>
+    <script>
+        
+        let imgBox=document.getElementById("imgBox")
+        let qrImage=document.getElementById("qrImage")
+        let qrText=document.getElementById("qrText")
+       let  downloadImg=document.getElementById("downloadImg")
+       
+        
+        function generateQR(){
+        
+
+            //if input text -non empty then generate qr
+            if (qrText.value.length >0){
+                qrImage.src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + qrText.value; 
+            imgBox.classList.add("show-img") //add class name
+            downloadImg.style.display = "block"; // Display download button
+            } else{
+                qrText.classList.add('error'); //if empty add classname error to add animation 
+                setTimeout(()=>{
+                    qrText.classList.remove('error') //remove effect after a time 1 s
+                },1000)
+                setTimeout(()=>{
+                    alert("Enter the text or URL to generate the QR code");
+                },1200)
+              
+            }
+        }
+        downloadImg.addEventListener('click',async()=>{
+        
+            const response= await fetch( qrImage.src);  //fetches the QR code image from the qrImage.src URL using the fetch API.
+            const blob= await response.blob(); //converts the fetched image into a Blob object using the blob() method.
+            const downloadLink=document.createElement("a"); //create a tag
+            downloadLink.href=URL.createObjectURL(blob) //set href of <a>
+            downloadLink.download="QR_code.png"; //set download='qr_code.png'
+            downloadLink.click(); //trigger event
+            
+           
+        })
+           
+           
+        
+    </script>
 </body>
 </html>
